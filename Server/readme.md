@@ -3,6 +3,57 @@
 This is a node.js/express web application that enables poll based Zoom presence. I created it to build
 an on-air light that wold turn on and off automatically based on actual Zoom status.
 
+## Create Zoom Marketplace App for personal use
+
+Go to the Zoom Marketplace here - https://marketplace.zoom.us/
+Create a new OAuth app
+
+Create an OAuth app screen
+```bash
+Give it a name
+Choose the user-managed app option
+Turn off the publish to Zoom Marketplace option
+click Create
+```
+
+App credentials screen 
+```bash
+Copy your Client ID and Client Secret. You will need these later when you create the web server configuration file
+Add the url where you will host the server to both the "Redirect URL for OAuth" and "Whitelist URL" fields
+click Continue
+```
+
+Information screen
+```bash
+you need to fill out the Short Description, Long Description, Company Name, Name and Email Address fields
+click Continue
+```
+
+Feature screen
+```bash
+Turn on "Event Subscriptions" option
+Select "Add new event subscrition"
+Give it a name in "Subscription Name"
+In the "Event notification endpoint URL" add the web server url you used earlier and append "/hook" to it without the quotes
+Click "Add events"
+Select "User Activity"
+Select "User's presence status has been updated"
+Click Done
+Click Save
+Click Continue
+```
+
+Scopes Screen
+```bash
+Click "Add Scopes"
+Select User
+Select "View your user information"
+Click Done
+Click Continue
+```
+
+Do not click install yet. The app requires the server to be up and runnng for to provide a working OAuth redirect. Follow the directions below to configure the server and when it is running and you have configured it with the data you recordered above you can come back here and click instsall
+
 ## Installation
 
 Clone and install the app and it's dependencies. There are a number of them
