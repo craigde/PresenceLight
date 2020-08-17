@@ -1,4 +1,39 @@
-public static String version()      {  return "v1.0"  }
+/***********************************************************************************************************************
+*  Copyright 2020 craigde
+*
+*  Source -https://github.com/craigde/PresenceLight
+*
+*  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+*  in compliance with the License. You may obtain a copy of the License at:
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+*  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+*  for the specific language governing permissions and limitations under the License.
+*
+*  Zoom On Air Light
+*
+*  Author: craigde
+*  Date: 2020-8-17
+*
+* This is an application that allows you to create an automatic "On Air" light driven by Zoom presence with a home automation systm.
+* Requires a Server (node.js/express web application) that enables poll based Zoom presence. It needs to be accessbile on the internet somewhere where Zoom can send it events via WebHook for change of presence events. Further details in the Server folder in link above.
+*
+* for use with HUBITAT
+*
+*
+***********************************************************************************************************************/
+
+public static String version()      {  return "v1.01"  }
+
+
+/***********************************************************************************************************************
+*
+* Version 1
+*   6/31/2020: 1.0 - initial version
+*   8/17/2020: 1.01 - fixed issue where app did not autostart correctly after a reboot
+*/
 
 definition(
     name: "Zoom On Air Light",
@@ -38,6 +73,8 @@ def updated() {
 }
 
 def initialize() {
+    //subscribe to hub restart so app continues to run after a reboot
+    subscribe(location, "systemStart", hubRestartHandler) 
     checkPresence()
 }
 
@@ -53,7 +90,7 @@ def checkPresence() {
     try {
         httpGet(params)		{ resp ->
             if (resp?.data)     ZoomPresence << resp.data;
-            else                log.error "http call for Weatherstack weather api did not return data: $resp";
+            else                log.error "http call for Zoom status did not return data: $resp";
         }
     } catch (e) { log.error "http call failed for api: $e" }
     if (isDebug) { log.debug "$ZoomPresence" }
@@ -67,4 +104,9 @@ def checkPresence() {
         if (isDebug) {log.debug "User is available: turning switch off"}
     }
     runIn(60 * minutes, checkPresence)
+}
+
+def hubRestartHandler(evt) {
+    //Hub rebooted so set initial poll time
+    checkPresence()
 }
