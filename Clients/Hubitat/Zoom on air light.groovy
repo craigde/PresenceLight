@@ -33,6 +33,7 @@ public static String version()      {  return "v1.01"  }
 * Version 1
 *   6/31/2020: 1.0 - initial version
 *   8/17/2020: 1.01 - fixed issue where app did not autostart correctly after a reboot
+*   1/20/2021: 1.02 - fixed issue with incorrect status when screensharing
 */
 
 definition(
@@ -95,7 +96,7 @@ def checkPresence() {
     } catch (e) { log.error "http call failed for api: $e" }
     if (isDebug) { log.debug "$ZoomPresence" }
     
-    if (ZoomPresence.Status == "Do_Not_Disturb") {
+    if (ZoomPresence.Status == "Do_Not_Disturb" || "Presenting") {
         if (isDebug) {log.debug "User is busy:  turning switch on"}
         theswitch.on()
     }
