@@ -96,7 +96,7 @@ def checkPresence() {
     } catch (e) { log.error "http call failed for api: $e" }
     if (isDebug) { log.debug "$ZoomPresence" }
     
-    if (ZoomPresence.Status == "Do_Not_Disturb" || "Presenting") {
+    if (ZoomPresence.Status != "Available") {
         if (isDebug) {log.debug "User is busy:  turning switch on"}
         theswitch.on()
     }
